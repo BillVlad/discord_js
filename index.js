@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const { prefix, token, name, type, audio1 } = require('./config.json');
+const { prefix, token, type, audio1, audio2 } = require('./config.json');
+const name = 'ENA';
 
 client.once('ready', () => {
     console.log(`Ready! ${client.user.tag}`);
@@ -17,7 +18,7 @@ client.on('message', msg => {
     };
 });
 
-client.on('message', msg =>{
+client.on('message', async msg =>{
     if (msg.author.bot || !msg.content.startsWith(prefix)) return;
     const args = msg.content.slice(prefix.length).split(/ +/);
     const cmd = args.shift().toLowerCase();
@@ -35,6 +36,21 @@ client.on('message', msg =>{
             msg.channel.send("ERROR")
             console.log(e)
         };
+    }
+
+    if (cmd === 'voice1') {
+        const playcon = await msg.member.voice.channel.join();
+        playcon.play(audio1);
+    }
+    if (cmd === 'voice2') {
+        const playcon = await msg.member.voice.channel.join();
+        playcon.play(audio2);
+    }
+    if (cmd === 'stop') {
+        msg.guild.me.voice.channel.leave();
+    }
+    if (cmd === 'changegame') {
+        client.user.setActivity(name, {type: type});
     }
 })
 
@@ -83,15 +99,6 @@ client.on('message', msg => {
         };
         msg.channel.send({ embed: helpEmbed });
     }
-});
-
-client.on('message', async msg => {
-    if (msg.content.startsWith(`${prefix}voice`)) {
-        const con = await msg.member.voice.channel.join();
-        con.play(audio1);
-    } else if (msg.content.startsWith(`${prefix}stop`)) {
-        msg.guild.me.voice.channel.leave();
-    };
 });
 
 client.login(token);
