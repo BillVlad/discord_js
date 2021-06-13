@@ -23,12 +23,21 @@ client.on('message', async msg =>{
     const args = msg.content.slice(prefix.length).split(/ +/);
     const cmd = args.shift().toLowerCase();
 
+    async function playmus(a1) {
+    const playcon = await msg.member.voice.channel.join();
+    playcon.play(a1);
+    };
+
+    function nonono() {
+        msg.channel.send('У вас нет прав на эту команду');
+    }
+
     if (cmd === 'clear') {
-        if (!msg.member.hasPermission('MANAGE_MESSAGES')) return msg.channel.send("У вас недостаточно прав.")
-        if (!args[0]) return msg.channel.send('Укажите колличество сообщений.')
-        var num = parseInt(args[0], 10)
-        if (isNaN(num)) return msg.channel.send('Циферками пиши, дэбил')
-        if (num >= 100) return msg.channel.send('Уронить меня хотел? Быдло! Я могу удалять только до 100 сообщений!')
+        if (!msg.member.hasPermission('MANAGE_MESSAGES')) return nonono();
+        if (!args[0]) return msg.channel.send('Укажите колличество сообщений.');
+        var num = parseInt(args[0], 10);
+        if (isNaN(num)) return msg.channel.send('Циферками пиши, дэбил');
+        if (num >= 100) return msg.channel.send('Уронить меня хотел? Быдло! Я могу удалять только до 100 сообщений!');
         if (num < 1) return msg.channel.send('Введи больше нуля.')
         try { 
             msg.channel.bulkDelete(num + 1); 
@@ -39,18 +48,26 @@ client.on('message', async msg =>{
     }
 
     if (cmd === 'voice1') {
-        const playcon = await msg.member.voice.channel.join();
-        playcon.play(audio1);
+        playmus(audio1);
     }
     if (cmd === 'voice2') {
-        const playcon = await msg.member.voice.channel.join();
-        playcon.play(audio2);
+        playmus(audio2);
     }
     if (cmd === 'stop') {
         msg.guild.me.voice.channel.leave();
     }
     if (cmd === 'changegame') {
         client.user.setActivity(name, {type: type});
+    }
+    if (cmd === 'destroy') {
+        if (!msg.member.hasPermission('ADMINISTRATOR')) return nonono();
+        msg.channel.send('Выключение...').then(() =>{
+            client.destroy();
+        });
+    }
+    if (cmd === 'echo') {
+        const cmd1 = `${prefix}${cmd}`;
+        msg.channel.send(`${msg.content.replace(cmd1, '')}`);
     }
 })
 
