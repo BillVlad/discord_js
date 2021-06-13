@@ -11,11 +11,6 @@ client.once('ready', () => {
 client.on('message', msg => {
     // Это выводит сообщение в канале.
     console.log(`[${msg.guild.name}] - ${msg.channel.name} - ${msg.author.username}: ${msg.content}`);
-    if (msg.content.startsWith(`${prefix}ping`)) {
-        msg.channel.send('Pong');
-    } else if (msg.content === `${prefix}server`) {
-        msg.channel.send(`Название этого сервера: ${msg.guild.name}\nАватарка: ${msg.guild.iconURL()}`);
-    };
 });
 
 client.on('message', async msg =>{
@@ -30,7 +25,7 @@ client.on('message', async msg =>{
 
     function nonono() {
         msg.channel.send('У вас нет прав на эту команду');
-    }
+    };
 
     if (cmd === 'clear') {
         if (!msg.member.hasPermission('MANAGE_MESSAGES')) return nonono();
@@ -45,34 +40,30 @@ client.on('message', async msg =>{
             msg.channel.send("ERROR")
             console.log(e)
         };
-    }
-
+    };
     if (cmd === 'voice1') {
         playmus(audio1);
-    }
+    };
     if (cmd === 'voice2') {
         playmus(audio2);
-    }
+    };
     if (cmd === 'stop') {
         msg.guild.me.voice.channel.leave();
-    }
+    };
     if (cmd === 'changegame') {
         client.user.setActivity(name, {type: type});
-    }
+    };
     if (cmd === 'destroy') {
         if (!msg.member.hasPermission('ADMINISTRATOR')) return nonono();
         msg.channel.send('Выключение...').then(() =>{
             client.destroy();
         });
-    }
+    };
     if (cmd === 'echo') {
         const cmd1 = `${prefix}${cmd}`;
         msg.channel.send(`${msg.content.replace(cmd1, '')}`);
-    }
-})
-
-client.on('message', msg => {
-    if (msg.content.startsWith(`${prefix}user`)) {
+    };
+    if (cmd === 'user') {
         const user = msg.mentions.users.first() || msg.author;
         const avatarEmbed = new Discord.MessageEmbed()
         .setTitle(`${user.username}#${user.discriminator}`)
@@ -82,10 +73,7 @@ client.on('message', msg => {
         .setColor('#fff00');
         msg.channel.send({embed: avatarEmbed});
     };
-})
-
-client.on('message', msg => {
-    if (msg.content.startsWith(`${prefix}help`)) {
+    if (cmd === 'help') {
         const helpEmbed = {
             color: 0x0099ff,
             title: '~~помощь душевнобольным детям из ДНР~~',
@@ -115,7 +103,32 @@ client.on('message', msg => {
             timestamp: new Date(),
         };
         msg.channel.send({ embed: helpEmbed });
-    }
-});
+    };
+    if (cmd === 'server') {
+        let desc = msg.guild.description;
+        if (desc === null) { 
+            desc = `Нету описания`;
+        }
+        const ServerEmbed = {
+            color: 0x0000000,
+            title: `Информация о сервере:`,
+            author: {
+                name: `Сервер: ${msg.guild.name}`,
+                icon_url: `${msg.guild.iconURL({format: 'png', size: 256, dynamic: true})}`
+            },
+            fields: [
+                {
+                    name: `Описание:`,
+                    value: desc,
+                },
+                {
+                    name: `Регион:`,
+                    value: msg.guild.region
+                }
+            ]
+        };
+        msg.channel.send({embed: ServerEmbed});
+    };
+})
 
 client.login(token);
