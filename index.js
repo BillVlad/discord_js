@@ -10,7 +10,7 @@ client.once('ready', () => {
 
 client.on('message', msg => {
     // Это выводит сообщение в канале.
-    console.log(`[${msg.guild.name}] - ${msg.channel.name} - ${msg.author.username}: ${msg.content}`);
+    console.log(`${msg.author.username}: ${msg.content}`);
 });
 
 client.on('message', async msg =>{
@@ -75,22 +75,21 @@ client.on('message', async msg =>{
     };
     if (cmd === 'help') {
         const helpEmbed = {
-            color: 0x0099ff,
-            title: '~~помощь душевнобольным детям из ДНР~~',
-            url: 'https://google.com/',
+            color: 0xff0000,
+            title: 'Справочник по боту',
             author: {
-                name: 'BillVLad#4499',
-                icon_url: `https://cdn.discordapp.com/avatars/705336251233992705/227df8563f4e3058d79139505492bffe.png`,
+                name: `${client.user.tag} (по клику можно попасть на страницу автора)`,
+                icon_url: client.user.avatarURL({format: 'png', size: 4096, dynamic: true}),
                 url: 'https://billvlad.github.io'
             },
-            description: '*Что-то на арабском*',
+            description: 'Ниже перечислены команды:',
             fields: [
                 {
                     name: 'help',
                     value: 'Вы сейчас это видите',
                 },
                 {
-                    name: 'play',
+                    name: 'voice[1, 2]',
                     value: 'Начинает играть музыку (хуня какая-то)',
                     inline: true
                 },
@@ -99,6 +98,11 @@ client.on('message', async msg =>{
                     value: 'Выгоняет араба на улицу',
                     inline: true
                 },
+                {
+                    name: 'clear',
+                    value: 'Чистит чат от херни',
+                    inline: true
+                }
             ],
             timestamp: new Date(),
         };
@@ -106,9 +110,7 @@ client.on('message', async msg =>{
     };
     if (cmd === 'server') {
         let desc = msg.guild.description;
-        if (desc === null) { 
-            desc = `Нету описания`;
-        }
+        if (desc === null) { desc = `Нету описания` }
         const ServerEmbed = {
             color: 0x0000000,
             title: `Информация о сервере:`,
@@ -124,6 +126,10 @@ client.on('message', async msg =>{
                 {
                     name: `Регион:`,
                     value: msg.guild.region
+                },
+                {
+                    name: `Колличество каналов:`,
+                    value: msg.guild.channels.size
                 }
             ]
         };
